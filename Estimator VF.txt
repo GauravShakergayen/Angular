@@ -41,7 +41,19 @@
                               cellEditorParams:{maxLength: 300,rows: 10, cols: 20}},
                 {headerName: "Scope Description", field: "confScope",width: 150,editable: true,
                               cellEditorParams:{maxLength: 300,rows: 10,cols: 20}},
-                {headerName: "Scope Compxlexity", field: "ScopeComplexity",width: 150},
+                {headerName: "Scope Compxlexity", field: "scopeComplexity",width: 150,
+                  cellRenderer: function(params) {
+                  var contentElement, rowElement, tableElement;
+                  var tableElement = document.createElement("table");
+                  rowElement = tableElement.insertRow(0);
+                  contentElement = rowElement.insertCell(0);
+                  contentElement.innerHTML = 123;
+                  contentElement = rowElement.insertCell(1);
+                  contentElement.innerHTML = 456;
+                  console.log(params);
+                  return tableElement;
+                  
+                }},
                 {headerName: "Effort", field: "totalHours",width: 150}
             ];
             
@@ -62,7 +74,6 @@
             
             function loadJSONData(){
                var requirementData ='{!reqObjJson}';
-               console.log(requirementData);
                $scope.gridOptions.api.setRowData(JSON.parse(requirementData));
             }
         
