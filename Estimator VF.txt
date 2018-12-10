@@ -1,0 +1,75 @@
+<apex:page standardController="Project__c" extensions="EST_EstimationPage_Extenstion" showHeader="false" sidebar="false" doctype="html-5.0" standardStylesheets="false" showChat="false" applyBodyTag="false" applyHtmlTag="false">
+<html lang="en" ng-app="dEstimator">
+    <head>
+        <apex:stylesheet value="{!URLFOR($Resource.ESTResources,'/css/bootstrap.min.css')}" />
+        <apex:stylesheet value="{!URLFOR($Resource.ESTResources,'/css/font-awesome.min.css')}" />
+        <apex:stylesheet value="{!URLFOR($Resource.ESTResources,'/css/estimatorCustom.css')}" />
+        <apex:stylesheet value="{!URLFOR($Resource.AgGrid_Bundle,'/ag-grid-bundle/node_modules/ag-grid-community/dist/styles/ag-grid.css')}" />
+        <apex:stylesheet value="{!URLFOR($Resource.AgGrid_Bundle,'/ag-grid-bundle/node_modules/ag-grid-community/dist/styles/ag-theme-balham.css')}" />
+       
+        <apex:includeScript value="{!URLFOR($Resource.ESTResources,'/script/jquery.min.js')}" />
+        <apex:includeScript value="{!URLFOR($Resource.ESTResources,'/script/bootstrap.min.js')}" />
+        <apex:includeScript value="{!URLFOR($Resource.ESTResources,'/script/angular.min.js')}" />
+        <apex:includeScript value="{!URLFOR($Resource.ESTResources,'/script/angular-animate.min.js')}" />
+       
+        <apex:includeScript value="{!URLFOR($Resource.AgGrid_Bundle,'/ag-grid-bundle/node_modules/ag-grid-community/dist/ag-grid-community.min.js')}" />
+        <style type="text/css">
+            html, body { margin: 0; padding: 0; height: 100%; }
+        </style>
+        </head>
+    <body>
+       
+       <div ng-controller="dEstimatorController as estimatorCtrl" style="height: 100%">
+         <div ag-grid="gridOptions" class="ag-theme-balham" style="height: 100%;"></div>
+       </div>
+      
+       <script type="text/javascript">
+                
+        agGrid.initialiseAgGridWithAngular1(angular);
+        var dEstimator = angular.module("dEstimator", ["agGrid","ngAnimate"]);
+        
+        dEstimator.controller("dEstimatorController", function($scope) {
+            
+            var columnDefs = [
+                {headerName: "S.No.", field: "reqNo",width: 100},
+                {headerName: "Requirement Detail", field: "reqDetail",width: 150},
+                {headerName: "Functional Area", field: "funcArea",width: 150},
+                {headerName: "User", field: "assignedUser",width: 150},
+                {headerName: "Questions", field: "comm",width: 150,editable: true,cellEditor: "agLargeTextCellEditor",
+                             cellEditorParams:{maxLength: 300, rows: 10, cols: 20}},
+                {headerName: "Assumptions", field: "assump",width: 150,editable: true,  cellEditor: "agLargeTextCellEditor",
+                              cellEditorParams:{maxLength: 300,rows: 10, cols: 20}},
+                {headerName: "Scope Description", field: "confScope",width: 150,editable: true,
+                              cellEditorParams:{maxLength: 300,rows: 10,cols: 20}},
+                {headerName: "Scope Compxlexity", field: "ScopeComplexity",width: 150},
+                {headerName: "Effort", field: "totalHours",width: 150}
+            ];
+            
+            
+        
+            $scope.gridOptions = {
+                columnDefs: columnDefs,
+                angularCompileRows:true,
+                enableSorting:"true",
+                enableFilter: "true",
+                enableColResize: "true",
+                onGridReady: function(){
+                     $scope.gridOptions.api.sizeColumnsToFit();
+                     loadJSONData();
+                }
+            };
+            
+            
+            function loadJSONData(){
+               var requirementData ='{!reqObjJson}';
+               console.log(requirementData);
+               $scope.gridOptions.api.setRowData(JSON.parse(requirementData));
+            }
+        
+        });
+        
+        
+       </script>
+    </body>
+</html>
+</apex:page>
