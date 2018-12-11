@@ -47,6 +47,10 @@
                   var tableElement = document.createElement("table");
                   tableElement.setAttribute('id', 'scopeComplexityTable');
                     
+                    //scope catrgory selection option value
+                    var scopeCategory = [];
+                    scopeCategory = ['--Complexity--','Not Applicable','OOB/Very Low','Low','Medium','High','Very High'];
+                    
                     //create table headers
                     var arrHead = [];
                     arrHead = ['  ','  ', 'Units', 'Story Points'];
@@ -66,18 +70,23 @@
                     }
                     for (var c = 0; c <= arrValue.length - 1; c++) {
                         tr = tableElement.insertRow(-1);
-                        
+                        //add data to td tags
                         for (var j = 0; j < arrHead.length; j++) {
                             var td = document.createElement('td');          // TABLE DEFINITION.
                             td = tr.insertCell(-1);
-                            //td.innerHTML = arrValue[c][j];                  
+                            //append select option for 2nd column                 
                             if(j==1){
-                              console.log('cj-'+c);
                               var selectElement= document.createElement("select");
-                                var optionElement = document.createElement("option");
-                                optionElement.value = c;
-                                optionElement.text = c;
-                                selectElement.appendChild(optionElement);
+                                for (var sc = 0; sc < scopeCategory.length; sc++) {
+                                    var optionElement = document.createElement("option");
+                                    optionElement.value = scopeCategory[sc];
+                                    if(arrValue[c][j] == optionElement.value){
+                                      optionElement.selected='selected';
+                                    }
+                                    optionElement.text = scopeCategory[sc];
+                                    selectElement.appendChild(optionElement);
+                                    
+                                }
                                 td.appendChild(selectElement);
                             }
                             else{
@@ -86,9 +95,6 @@
                             
                         }
                     }
-                    
-                    
-                    //console.log(params.data);
                     
                    return tableElement;
                   
