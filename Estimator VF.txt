@@ -43,12 +43,14 @@
                               cellEditorParams:{maxLength: 300,rows: 10,cols: 20}},
                 {headerName: "Scope Compxlexity", field: "scopeComplexity",width: 350,autoHeight: true,
                   cellRenderer: function(params) {
+                  //create table tag
                   var tableElement = document.createElement("table");
                   tableElement.setAttribute('id', 'scopeComplexityTable');
-                  
-                  var arrHead =[];
+                    
+                    //create table headers
+                    var arrHead = [];
                     arrHead = ['  ','  ', 'Units', 'Story Points'];
-            
+                    //create data for td tags
                     var arrValue = [];
                     arrValue.push(['Configuration:',params.data.confComplex, params.data.confUnits, params.data.confHours]);
                     arrValue.push(['Customization:',params.data.custComplex, params.data.custUnits, params.data.custHours]);
@@ -64,14 +66,31 @@
                     }
                     for (var c = 0; c <= arrValue.length - 1; c++) {
                         tr = tableElement.insertRow(-1);
+                        
                         for (var j = 0; j < arrHead.length; j++) {
                             var td = document.createElement('td');          // TABLE DEFINITION.
                             td = tr.insertCell(-1);
-                            td.innerHTML = arrValue[c][j];                  // ADD VALUES TO EACH CELL.
+                            //td.innerHTML = arrValue[c][j];                  
+                            if(j==1){
+                              console.log('cj-'+c);
+                              var selectElement= document.createElement("select");
+                                var optionElement = document.createElement("option");
+                                optionElement.value = c;
+                                optionElement.text = c;
+                                selectElement.appendChild(optionElement);
+                                td.appendChild(selectElement);
+                            }
+                            else{
+                                td.innerHTML = arrValue[c][j];  // ADD VALUES TO EACH CELL.
+                            }
+                            
                         }
                     }
-                  console.log(params.data);
-                  return tableElement;
+                    
+                    
+                    //console.log(params.data);
+                    
+                   return tableElement;
                   
                 }},
                 {headerName: "Effort", field: "totalHours",width: 150}
@@ -86,7 +105,6 @@
                 enableFilter: "true",
                 enableColResize: "true",
                 onGridReady: function(){
-                   
                      $scope.gridOptions.api.sizeColumnsToFit();
                      loadJSONData();
                 }
