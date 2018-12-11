@@ -31,26 +31,47 @@
         dEstimator.controller("dEstimatorController", function($scope) {
             
             var columnDefs = [
-                {headerName: "S.No.", field: "reqNo",width: 100},
-                {headerName: "Requirement Detail", field: "reqDetail",width: 150},
-                {headerName: "Functional Area", field: "funcArea",width: 150},
-                {headerName: "User", field: "assignedUser",width: 150},
+                {headerName: "S.No.", field: "reqNo",width: 100,autoHeight: true},
+                {headerName: "Requirement Detail", field: "reqDetail",width: 150,autoHeight: true},
+                {headerName: "Functional Area", field: "funcArea",width: 150,autoHeight: true},
+                {headerName: "User", field: "assignedUser",width: 100,autoHeight: true},
                 {headerName: "Questions", field: "comm",width: 150,editable: true,cellEditor: "agLargeTextCellEditor",
                              cellEditorParams:{maxLength: 300, rows: 10, cols: 20}},
-                {headerName: "Assumptions", field: "assump",width: 150,editable: true,  cellEditor: "agLargeTextCellEditor",
+                {headerName: "Assumptions", field: "assump",width: 150,editable: true,autoHeight: true,cellEditor: "agLargeTextCellEditor",
                               cellEditorParams:{maxLength: 300,rows: 10, cols: 20}},
-                {headerName: "Scope Description", field: "confScope",width: 150,editable: true,
+                {headerName: "Scope Description", field: "confScope",width: 150,editable: true,autoHeight: true,cellEditor: "agLargeTextCellEditor",
                               cellEditorParams:{maxLength: 300,rows: 10,cols: 20}},
-                {headerName: "Scope Compxlexity", field: "scopeComplexity",width: 150,
+                {headerName: "Scope Compxlexity", field: "scopeComplexity",width: 250,autoHeight: true,
                   cellRenderer: function(params) {
-                  var contentElement, rowElement, tableElement;
                   var tableElement = document.createElement("table");
-                  rowElement = tableElement.insertRow(0);
-                  contentElement = rowElement.insertCell(0);
-                  contentElement.innerHTML = 123;
-                  contentElement = rowElement.insertCell(1);
-                  contentElement.innerHTML = 456;
-                  console.log(params);
+                  tableElement.setAttribute('id', 'scopeComplexityTable');
+                  var arrHead = new Array();
+                  
+                    arrHead = ['Scope', 'Units', 'Story Points'];
+            
+                    var arrValue = new Array();
+                    arrValue.push(['Configuration', params.data.confUnits, params.data.confHours]);
+                    arrValue.push(['Customization', params.data.custUnits, params.data.custHours]);
+                    arrValue.push(['Integration', params.data.integUnits, params.data.integHours]);
+                    arrValue.push(['UI Design', params.data.uiUnits, params.data.uiHours]);
+                    arrValue.push(['Data Migration ', params.data.dataUnits, params.data.dataHours]);
+            
+                    var tr = tableElement.insertRow(-1);
+                    for (var h = 0; h < arrHead.length; h++) {
+                        var th = document.createElement('th');              // TABLE HEADER.
+                        th.innerHTML = arrHead[h];
+                        tr.appendChild(th);
+                    }
+                    for (var c = 0; c <= arrValue.length - 1; c++) {
+                     tr = tableElement.insertRow(-1);
+
+                    for (var j = 0; j < arrHead.length; j++) {
+                        var td = document.createElement('td');          // TABLE DEFINITION.
+                        td = tr.insertCell(-1);
+                        td.innerHTML = arrValue[c][j];                  // ADD VALUES TO EACH CELL.
+                    }
+                }
+                  console.log(params.data);
                   return tableElement;
                   
                 }},
@@ -66,6 +87,7 @@
                 enableFilter: "true",
                 enableColResize: "true",
                 onGridReady: function(){
+                   
                      $scope.gridOptions.api.sizeColumnsToFit();
                      loadJSONData();
                 }
