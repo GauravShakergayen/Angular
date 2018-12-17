@@ -32,14 +32,8 @@
             <tr>
                <td>Configuration</td>
                <td>
-                   <select ng-model="configModel" ng-init="configModel = data.confComplex" ng-change="updateHours('Configuration',configModel);">
+                   <select ng-options="x for x in scopeCategories" ng-model="configModel" ng-init="configModel = data.confComplex" ng-change="updateHours('Configuration',configModel);">
                      <option value="">--Complexity--</option>
-                     <option value="Not Applicable">Not Applicable</option>
-                     <option value="OOB/Very Low">OOB/Very Low</option>
-                     <option value="Low">Low</option>
-                     <option value="Medium">Medium</option>
-                     <option value="High">High</option>
-                     <option value="Very High">Very High</option>
                    </select>
                 </td>
                 <td>{{data.confUnits}}</td>
@@ -48,14 +42,8 @@
             <tr>
                <td>Customization</td>
                <td>
-                   <select ng-model="custModel" ng-init="custModel = data.custComplex" ng-change="updateHours('Customization',custModel);">
+                   <select ng-options="x for x in scopeCategories" ng-model="custModel" ng-init="custModel = data.custComplex" ng-change="updateHours('Customization',custModel);">
                      <option value="">--Complexity--</option>
-                     <option value="Not Applicable">Not Applicable</option>
-                     <option value="OOB/Very Low">OOB/Very Low</option>
-                     <option value="Low">Low</option>
-                     <option value="Medium">Medium</option>
-                     <option value="High">High</option>
-                     <option value="Very High">Very High</option>
                    </select>
                 </td>
                 <td>{{data.custUnits}}</td>
@@ -64,14 +52,8 @@
             <tr>
                <td>Integration</td>
                <td>
-                   <select ng-model="integModel" ng-init="integModel = data.integComplex" ng-change="updateHours('Integration',integModel);">
+                   <select ng-options="x for x in scopeCategories" ng-model="integModel" ng-init="integModel = data.integComplex" ng-change="updateHours('Integration',integModel);">
                      <option value="">--Complexity--</option>
-                     <option value="Not Applicable">Not Applicable</option>
-                     <option value="OOB/Very Low">OOB/Very Low</option>
-                     <option value="Low">Low</option>
-                     <option value="Medium">Medium</option>
-                     <option value="High">High</option>
-                     <option value="Very High">Very High</option>
                    </select>
                 </td>
                 <td>{{data.integUnits}}</td>
@@ -80,14 +62,8 @@
             <tr>
                <td>UI Design</td>
                <td>
-                   <select ng-model="uiModel" ng-init="uiModel = data.uiComplex" ng-change="updateHours('UI Design',uiModel);">
+                   <select ng-options="x for x in scopeCategories" ng-model="uiModel" ng-init="uiModel = data.uiComplex" ng-change="updateHours('UI Design',uiModel);">
                      <option value="">--Complexity--</option>
-                     <option value="Not Applicable">Not Applicable</option>
-                     <option value="OOB/Very Low">OOB/Very Low</option>
-                     <option value="Low">Low</option>
-                     <option value="Medium">Medium</option>
-                     <option value="High">High</option>
-                     <option value="Very High">Very High</option>
                    </select>
                 </td>
                 <td>{{data.uiUnits}}</td>
@@ -96,14 +72,8 @@
             <tr>
                <td>Data Migration</td>
                <td>
-                   <select ng-model="dataModel" ng-init="dataModel = data.dataComplex" ng-change="updateHours('Data Migration',dataModel);">
+                   <select ng-options="x for x in scopeCategories" ng-model="dataModel" ng-init="dataModel = data.dataComplex" ng-change="updateHours('Data Migration',dataModel);">
                      <option value="">--Complexity--</option>
-                     <option value="Not Applicable">Not Applicable</option>
-                     <option value="OOB/Very Low">OOB/Very Low</option>
-                     <option value="Low">Low</option>
-                     <option value="Medium">Medium</option>
-                     <option value="High">High</option>
-                     <option value="Very High">Very High</option>
                    </select>
                 </td>
                 <td>{{data.dataUnits}}</td>
@@ -123,6 +93,8 @@
         var dEstimator = angular.module("dEstimator", ["agGrid","ngAnimate","ngSanitize"]);
         
         dEstimator.controller("dEstimatorController", function($scope,$sce) {
+        
+            $scope.scopeCategories = ['--Complexity--','Not Applicable','OOB/Very Low','Low','Medium','High','Very High'];
             
             var columnDefs = [
                 {headerName: "S.No.", field: "reqNo",width: 100,autoHeight: true},
