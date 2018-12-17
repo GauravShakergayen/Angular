@@ -20,12 +20,103 @@
        
        <div ng-controller="dEstimatorController as estimatorCtrl" style="height: 100%">
          <div ag-grid="gridOptions" class="ag-theme-balham" style="height: 100%;"></div>
+         
+         <template id="scopeComplexityTemplate" >
+          <table>
+            <tr>
+               <th>Scope</th>
+               <th>Complexity</th>
+               <th>Units</th>
+               <th>Story Points</th>
+            </tr>
+            <tr>
+               <td>Configuration</td>
+               <td>
+                   <select ng-model="configModel" ng-init="configModel = data.confComplex" ng-change="updateHours('Configuration',configModel);">
+                     <option value="">--Complexity--</option>
+                     <option value="Not Applicable">Not Applicable</option>
+                     <option value="OOB/Very Low">OOB/Very Low</option>
+                     <option value="Low">Low</option>
+                     <option value="Medium">Medium</option>
+                     <option value="High">High</option>
+                     <option value="Very High">Very High</option>
+                   </select>
+                </td>
+                <td>{{data.confUnits}}</td>
+                <td>{{data.confHours}}</td>
+            </tr>
+            <tr>
+               <td>Customization</td>
+               <td>
+                   <select ng-model="custModel" ng-init="custModel = data.custComplex" ng-change="updateHours('Customization',custModel);">
+                     <option value="">--Complexity--</option>
+                     <option value="Not Applicable">Not Applicable</option>
+                     <option value="OOB/Very Low">OOB/Very Low</option>
+                     <option value="Low">Low</option>
+                     <option value="Medium">Medium</option>
+                     <option value="High">High</option>
+                     <option value="Very High">Very High</option>
+                   </select>
+                </td>
+                <td>{{data.custUnits}}</td>
+                <td>{{data.custHours}}</td>
+            </tr>
+            <tr>
+               <td>Integration</td>
+               <td>
+                   <select ng-model="integModel" ng-init="integModel = data.integComplex" ng-change="updateHours('Integration',integModel);">
+                     <option value="">--Complexity--</option>
+                     <option value="Not Applicable">Not Applicable</option>
+                     <option value="OOB/Very Low">OOB/Very Low</option>
+                     <option value="Low">Low</option>
+                     <option value="Medium">Medium</option>
+                     <option value="High">High</option>
+                     <option value="Very High">Very High</option>
+                   </select>
+                </td>
+                <td>{{data.integUnits}}</td>
+                <td>{{data.integHours}}</td>
+            </tr>
+            <tr>
+               <td>UI Design</td>
+               <td>
+                   <select ng-model="uiModel" ng-init="uiModel = data.uiComplex" ng-change="updateHours('UI Design',uiModel);">
+                     <option value="">--Complexity--</option>
+                     <option value="Not Applicable">Not Applicable</option>
+                     <option value="OOB/Very Low">OOB/Very Low</option>
+                     <option value="Low">Low</option>
+                     <option value="Medium">Medium</option>
+                     <option value="High">High</option>
+                     <option value="Very High">Very High</option>
+                   </select>
+                </td>
+                <td>{{data.uiUnits}}</td>
+                <td>{{data.uiHours}}</td>
+            </tr>
+            <tr>
+               <td>Data Migration</td>
+               <td>
+                   <select ng-model="dataModel" ng-init="dataModel = data.dataComplex" ng-change="updateHours('Data Migration',dataModel);">
+                     <option value="">--Complexity--</option>
+                     <option value="Not Applicable">Not Applicable</option>
+                     <option value="OOB/Very Low">OOB/Very Low</option>
+                     <option value="Low">Low</option>
+                     <option value="Medium">Medium</option>
+                     <option value="High">High</option>
+                     <option value="Very High">Very High</option>
+                   </select>
+                </td>
+                <td>{{data.dataUnits}}</td>
+                <td>{{data.dataHours}}</td>
+            </tr>
+          </table>
+
+       </template>
+       
        </div>
-       <template id="deleteRow">
-
-                                <div class="delete-icon" ng-click="deleteRecord(data)"></div>
-
-                            </template>
+       
+       
+       
        <script type="text/javascript">
                 
         agGrid.initialiseAgGridWithAngular1(angular);
@@ -47,28 +138,7 @@
                 {headerName: "Scope Compxlexity", field: "scopeComplexity",width: 350,autoHeight: true,
                   cellRenderer: function(params) {
                   
-                   $scope.scopeCategories = ['--Complexity--','Not Applicable','OOB/Very Low','Low','Medium','High','Very High'];
-                   $scope.scopeType= ['Configuration','Customization','Integration','UI Design','Data Migration'];
-                   
-                   
-                   $scope.selectConfigHtml = '<select ng-model="configModel" ng-change="updateHours(scopeType[1],params.data.confComplex);" ng-options="x for x in scopeCategories" class="form-control" style="height: 25px"/>';                          
-                   $scope.selectCustHtml ='<select ng-model="custModel" ng-change="updateHours(scopeType[1],params.data.custComplex);" ng-options="x for x in scopeCategories" class="form-control" style="height: 25px"/>';
-                   $scope.selectIntegHtml ='<select ng-model="integModel" ng-change="updateHours(scopeType[2],params.data.integComplex);" ng-options="x for x in scopeCategories" class="form-control" style="height: 25px"/>';
-                   $scope.selectUIHtml ='<select ng-model="uiModel" ng-change="updateHours(scopeType[3],params.data.uiComplex);" ng-options="x for x in scopeCategories" class="form-control" style="height: 25px"/>';
-                   $scope.selectdataHtml ='<select ng-model="dataModel" ng-change="updateHours(scopeType[4],params.data.dataComplex);" ng-options="x for x in scopeCategories" class="form-control" style="height: 25px"/>';
-                   
-                 
-                   //create table tag
-                   var tableElement ='<table id="scopeComplexityTable">'+ 
-                                       '<tr><th>Scope</th><th>Complexity</th><th>Units</th><th>Story Points</th></tr>'+
-                                       '<tr><td>Configuration:</td><td>'+$sce.trustAsHtml($scope.selectConfigHtml)+'</td><td>'+params.data.confUnits+'</td><td>'+params.data.confHours+'</td></tr>'+
-                                       '<tr><td>Customization:</td><td>'+$sce.trustAsHtml($scope.selectCustHtml)+'</td><td>'+params.data.custUnits+'</td><td>'+params.data.custHours+'</td></tr>'+
-                                       '<tr><td>Integration:</td><td>'+$sce.trustAsHtml($scope.selectIntegHtml)+'</td><td>'+params.data.integUnits+'</td><td>'+params.data.integHours+'</td></tr>'+
-                                       '<tr><td>UI Design:</td><td>'+$sce.trustAsHtml($scope.selectUIHtml)+'</td><td>'+params.data.uiUnits+'</td><td>'+params.data.uiHours+'</td></tr>'+
-                                       '<tr><td>Data Migration:</td><td>'+$sce.trustAsHtml($scope.selectdataHtml)+'</td><td>'+params.data.dataUnits+'</td><td>'+params.data.dataHours+'</td></tr>'+
-                                     '</table>';
-                   console.log('***'+params.data);                  
-                   return tableElement;
+                  return $("#scopeComplexityTemplate").html();
                   
                 }},
                 {headerName: "Effort", field: "totalHours",width: 150}
