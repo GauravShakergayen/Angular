@@ -6,12 +6,11 @@
         <apex:stylesheet value="{!URLFOR($Resource.ESTResources,'/css/estimatorCustom.css')}" />
         <apex:stylesheet value="{!URLFOR($Resource.AgGrid_Bundle,'/ag-grid-bundle/node_modules/ag-grid-community/dist/styles/ag-grid.css')}" />
         <apex:stylesheet value="{!URLFOR($Resource.AgGrid_Bundle,'/ag-grid-bundle/node_modules/ag-grid-community/dist/styles/ag-theme-balham.css')}" />
-       
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.7/angular-sanitize.min.js"></script>
         <apex:includeScript value="{!URLFOR($Resource.ESTResources,'/script/jquery.min.js')}" />
         <apex:includeScript value="{!URLFOR($Resource.ESTResources,'/script/bootstrap.min.js')}" />
         <apex:includeScript value="{!URLFOR($Resource.ESTResources,'/script/angular.min.js')}" />
         <apex:includeScript value="{!URLFOR($Resource.ESTResources,'/script/angular-animate.min.js')}" />
-       
         <apex:includeScript value="{!URLFOR($Resource.AgGrid_Bundle,'/ag-grid-bundle/node_modules/ag-grid-community/dist/ag-grid-community.min.js')}" />
         <style type="text/css">
             html, body { margin: 0; padding: 0; height: 100%; }
@@ -22,13 +21,17 @@
        <div ng-controller="dEstimatorController as estimatorCtrl" style="height: 100%">
          <div ag-grid="gridOptions" class="ag-theme-balham" style="height: 100%;"></div>
        </div>
-      
+       <template id="deleteRow">
+
+                                <div class="delete-icon" ng-click="deleteRecord(data)"></div>
+
+                            </template>
        <script type="text/javascript">
                 
         agGrid.initialiseAgGridWithAngular1(angular);
-        var dEstimator = angular.module("dEstimator", ["agGrid","ngAnimate"]);
+        var dEstimator = angular.module("dEstimator", ["agGrid","ngAnimate","ngSanitize"]);
         
-        dEstimator.controller("dEstimatorController", function($scope) {
+        dEstimator.controller("dEstimatorController", function($scope,$sce) {
             
             var columnDefs = [
                 {headerName: "S.No.", field: "reqNo",width: 100,autoHeight: true},
@@ -43,66 +46,38 @@
                               cellEditorParams:{maxLength: 300,rows: 10,cols: 20}},
                 {headerName: "Scope Compxlexity", field: "scopeComplexity",width: 350,autoHeight: true,
                   cellRenderer: function(params) {
-                  //create table tag
-                  var tableElement = document.createElement("table");
-                  tableElement.setAttribute('id', 'scopeComplexityTable');
-                    
-                    //scope catrgory selection option value
-                    var scopeCategory = [];
-                    scopeCategory = ['--Complexity--','Not Applicable','OOB/Very Low','Low','Medium','High','Very High'];
-                    
-                    //create table headers
-                    var arrHead = [];
-                    arrHead = ['  ','  ', 'Units', 'Story Points'];
-                    //create data for td tags
-                    var arrValue = [];
-                    arrValue.push(['Configuration:',params.data.confComplex, params.data.confUnits, params.data.confHours]);
-                    arrValue.push(['Customization:',params.data.custComplex, params.data.custUnits, params.data.custHours]);
-                    arrValue.push(['Integration:',params.data.integComplex, params.data.integUnits, params.data.integHours]);
-                    arrValue.push(['UI Design:',params.data.uiComplex, params.data.uiUnits, params.data.uiHours]);
-                    arrValue.push(['Data Migration:',params.data.dataComplex, params.data.dataUnits, params.data.dataHours]);
-            
-                    var tr = tableElement.insertRow(-1);
-                    for (var h = 0; h < arrHead.length; h++) {
-                        var th = document.createElement('th');              // TABLE HEADER.
-                        th.innerHTML = arrHead[h];
-                        tr.appendChild(th);
-                    }
-                    for (var c = 0; c <= arrValue.length - 1; c++) {
-                        tr = tableElement.insertRow(-1);
-                        //add data to td tags
-                        for (var j = 0; j < arrHead.length; j++) {
-                            var td = document.createElement('td');          // TABLE DEFINITION.
-                            td = tr.insertCell(-1);
-                            //append select option for 2nd column                 
-                            if(j==1){
-                              var selectElement= document.createElement("select");
-                                for (var sc = 0; sc < scopeCategory.length; sc++) {
-                                    var optionElement = document.createElement("option");
-                                    optionElement.value = scopeCategory[sc];
-                                    if(arrValue[c][j] == optionElement.value){
-                                      optionElement.selected='selected';
-                                    }
-                                    optionElement.text = scopeCategory[sc];
-                                    selectElement.appendChild(optionElement);
-                                    
-                                }
-                                td.appendChild(selectElement);
-                            }
-                            else{
-                                td.innerHTML = arrValue[c][j];  // ADD VALUES TO EACH CELL.
-                            }
-                            
-                        }
-                    }
-                    
+                  
+                   $scope.scopeCategories = ['--Complexity--','Not Applicable','OOB/Very Low','Low','Medium','High','Very High'];
+                   $scope.scopeType= ['Configuration','Customization','Integration','UI Design','Data Migration'];
+                   
+                   
+                   $scope.selectConfigHtml = '<select ng-model="configModel" ng-change="updateHours(scopeType[1],params.data.confComplex);" ng-options="x for x in scopeCategories" class="form-control" style="height: 25px"/>';                          
+                   $scope.selectCustHtml ='<select ng-model="custModel" ng-change="updateHours(scopeType[1],params.data.custComplex);" ng-options="x for x in scopeCategories" class="form-control" style="height: 25px"/>';
+                   $scope.selectIntegHtml ='<select ng-model="integModel" ng-change="updateHours(scopeType[2],params.data.integComplex);" ng-options="x for x in scopeCategories" class="form-control" style="height: 25px"/>';
+                   $scope.selectUIHtml ='<select ng-model="uiModel" ng-change="updateHours(scopeType[3],params.data.uiComplex);" ng-options="x for x in scopeCategories" class="form-control" style="height: 25px"/>';
+                   $scope.selectdataHtml ='<select ng-model="dataModel" ng-change="updateHours(scopeType[4],params.data.dataComplex);" ng-options="x for x in scopeCategories" class="form-control" style="height: 25px"/>';
+                   
+                 
+                   //create table tag
+                   var tableElement ='<table id="scopeComplexityTable">'+ 
+                                       '<tr><th>Scope</th><th>Complexity</th><th>Units</th><th>Story Points</th></tr>'+
+                                       '<tr><td>Configuration:</td><td>'+$sce.trustAsHtml($scope.selectConfigHtml)+'</td><td>'+params.data.confUnits+'</td><td>'+params.data.confHours+'</td></tr>'+
+                                       '<tr><td>Customization:</td><td>'+$sce.trustAsHtml($scope.selectCustHtml)+'</td><td>'+params.data.custUnits+'</td><td>'+params.data.custHours+'</td></tr>'+
+                                       '<tr><td>Integration:</td><td>'+$sce.trustAsHtml($scope.selectIntegHtml)+'</td><td>'+params.data.integUnits+'</td><td>'+params.data.integHours+'</td></tr>'+
+                                       '<tr><td>UI Design:</td><td>'+$sce.trustAsHtml($scope.selectUIHtml)+'</td><td>'+params.data.uiUnits+'</td><td>'+params.data.uiHours+'</td></tr>'+
+                                       '<tr><td>Data Migration:</td><td>'+$sce.trustAsHtml($scope.selectdataHtml)+'</td><td>'+params.data.dataUnits+'</td><td>'+params.data.dataHours+'</td></tr>'+
+                                     '</table>';
+                   console.log('***'+params.data);                  
                    return tableElement;
                   
                 }},
                 {headerName: "Effort", field: "totalHours",width: 150}
             ];
             
-            
+            $scope.updateHours = function(scopeArea,scopeComplex){
+              console.log('***'+scopeArea);
+              console.log('***'+scopeComplex);
+            }
         
             $scope.gridOptions = {
                 columnDefs: columnDefs,
@@ -110,6 +85,8 @@
                 enableSorting:"true",
                 enableFilter: "true",
                 enableColResize: "true",
+                pagination: "true",
+                paginationPageSize : 5,
                 onGridReady: function(){
                      $scope.gridOptions.api.sizeColumnsToFit();
                      loadJSONData();
@@ -120,6 +97,10 @@
             function loadJSONData(){
                var requirementData ='{!reqObjJson}';
                $scope.gridOptions.api.setRowData(JSON.parse(requirementData));
+            }
+            
+            function loadScopeTableData(){
+               
             }
         
         });
