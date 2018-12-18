@@ -19,9 +19,16 @@
     <body>
        
        <div ng-controller="dEstimatorController as estimatorCtrl" style="height: 100%">
+         <div class="container">
+              <div>
+                 Page Size:
+                <select id="page-size" ng-init="pageSizeModel = 2" ng-options="x for x in pagationPageSize" ng-model="pageSizeModel" ng-change="onPageSizeChanged();">
+                </select>
+              </div>
+           </div>
          <div ag-grid="gridOptions" class="ag-theme-balham" style="height: 100%;"></div>
          
-         <template id="scopeComplexityTemplate" >
+         <template id="scopeComplexityTemplate">
           <table>
             <tr>
                <th>Scope</th>
@@ -95,6 +102,7 @@
         dEstimator.controller("dEstimatorController", function($scope,$sce) {
         
             $scope.scopeCategories = ['--Complexity--','Not Applicable','OOB/Very Low','Low','Medium','High','Very High'];
+            $scope.pagationPageSize = [2,5,10,20,50,100,200,500];
             
             var columnDefs = [
                 {headerName: "S.No.", field: "reqNo",width: 100,autoHeight: true},
@@ -107,7 +115,7 @@
                               cellEditorParams:{maxLength: 300,rows: 10, cols: 20}},
                 {headerName: "Scope Description", field: "confScope",width: 150,editable: true,autoHeight: true,cellEditor: "agLargeTextCellEditor",
                               cellEditorParams:{maxLength: 300,rows: 10,cols: 20}},
-                {headerName: "Scope Compxlexity", field: "scopeComplexity",width: 350,autoHeight: true,
+                {headerName: "Scope Complexity", field: "scopeComplexity",width: 350,autoHeight: true,
                   cellRenderer: function(params) {
                   
                   return $("#scopeComplexityTemplate").html();
@@ -120,7 +128,12 @@
               console.log('***'+scopeArea);
               console.log('***'+scopeComplex);
             }
-        
+            
+            $scope.onPageSizeChanged = function(){
+              var value = document.getElementById("page-size").value;
+              $scope.gridOptions.api.paginationSetPageSize(Number(value));
+            }
+            
             $scope.gridOptions = {
                 columnDefs: columnDefs,
                 angularCompileRows:true,
@@ -128,7 +141,7 @@
                 enableFilter: "true",
                 enableColResize: "true",
                 pagination: "true",
-                paginationPageSize : 5,
+                paginationPageSize : 2,
                 onGridReady: function(){
                      $scope.gridOptions.api.sizeColumnsToFit();
                      loadJSONData();
