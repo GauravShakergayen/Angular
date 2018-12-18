@@ -22,7 +22,7 @@
          <div class="container">
               <div>
                  Page Size:
-                <select id="page-size" ng-init="pageSizeModel = 2" ng-options="x for x in pagationPageSize" ng-model="pageSizeModel" ng-change="onPageSizeChanged();">
+                <select id="page-size" ng-init="pageSizeModel = 2" ng-options="x for x in pagationPageSize" ng-model="pageSizeModel" ng-change="onPageSizeChanged(pageSizeModel);">
                 </select>
               </div>
            </div>
@@ -129,9 +129,8 @@
               console.log('***'+scopeComplex);
             }
             
-            $scope.onPageSizeChanged = function(){
-              var value = document.getElementById("page-size").value;
-              $scope.gridOptions.api.paginationSetPageSize(Number(value));
+            $scope.onPageSizeChanged = function(pageSizeValue){
+              $scope.gridOptions.api.paginationSetPageSize(parseInt(pageSizeValue));
             }
             
             $scope.gridOptions = {
